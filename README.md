@@ -1,6 +1,6 @@
 ## Pri-miRNA quantification from single-cell RNA-seq datasets
 
-MiRNA genes called pri-miRNAs are transcribed by RNA polymerase II, similarly as protein-coding genes. In order to quantify their transcriptional activity, we used the annotation developed in Bouvy-Liivrand et al, 2017 and extended in Turunen et al, 2021 and Hernandez de Sande et al, 2023 (bioRxiv) to quantify pri-miRNA transcripts from single-cell RNA-seq datasets.
+MiRNA genes called pri-miRNAs are transcribed by RNA polymerase II, similarly as protein-coding genes. In order to quantify their transcriptional activity, we used the annotation developed in Bouvy-Liivrand et al, 2017 and extended in Turunen et al, 2021 and 'Hernández de Sande et al, 2023'(https://www.biorxiv.org/content/10.1101/2023.10.09.561173v2) to quantify pri-miRNA transcripts from single-cell RNA-seq datasets.
 
 You can find code related to the analysis in this repository. The data objects with miRNA gene counts and cell type metadata are hosted at https://kana.rahtiapp.fi/ for interactive analysis.
 
