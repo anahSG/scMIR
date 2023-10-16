@@ -8,11 +8,11 @@ commandArgs()
 
 #### This script are meant to have individual tissues where several conditions are pooled together
 # in order to perform better in the droplet detection by cell type. 
+## usage: nohup Rscript 1_combined_dsb_scaled_seurat_all.R path2files tissue samplestable.txt > log_droplet_detection_date.log
+## example: nohup Rscript 1_combined_dsb_scaled_seurat_all.R /user/folder/ WA samplestable.txt > log_droplet_detection_date.log
 
 ### there are several options that will allow you to run this in the terminal
-
-setwd("/research/groups/sysgen/PROJECTS/terva/HTO_classification/hist_distribution/")
-#setwd(getwd())
+setwd(getwd())
 
 # load packages used in this vignette 
 AUTOINSTALL=function(){
@@ -47,26 +47,21 @@ suppressMessages(library(tidyverse))
 ## list all input folders (could adapt with args PATH and tissue, cond could be a txt file)
 
 #........................................................................................#
-#PATH=args[1]
-PATH ="/research/groups/biowhat_share/share/terva/terva_main_scrnaseq/cellranger_v3_count_output/"
+PATH=args[1]
 
 #### samples are combined by tissue
-tissue = "WA"
+tissue = args[2]
 
 ## do not remove the bar at the end!
 OUTPUT=paste0(tissue,"_","combined_results/")
-#tissue = args[2]
-
 dir.create(paste0(getwd(),"/",OUTPUT))
 
-
 ### include here your samples, if run in bash write your samples in a column in a .txt file
-#cond=read.table(args[3])[1,]
-cond = c("C","ED","LD","PL","IC")
-
-res_names=paste(cond,tissue, sep="-")
+cond=read.table(args[3])[1,]
+# cond = c("C","ED","LD","PL","IC")
 
 ### if different set of samples and tissues, make a vector with the samples to be analyzed
+res_names=paste(cond,tissue, sep="-")
 res_names
 
 ## Let's first read the RNA data and see if we can plot n features and n counts per dataset
@@ -80,7 +75,6 @@ md.all=NULL
 
 ## dsb_norm_list is a list that stores the DSB normalized counts for HTO assay
 dsb_norm_list=NULL
-
 
 for ( i in res_names){
   # read raw data using the Seurat function "Read10X" 
@@ -139,46 +133,19 @@ for ( i in res_names){
   dev.off()
   #Note cells with the smaller library size are mostly naive CD4 T cells which are small in size and naturally have less mRNA content.
   
-  # calculate statistical thresholds for droplet filtering. 
-  #rna_size_min = median(cellmd$rna_size) - (3*mad(cellmd$rna_size))
-  #rna_size_max = median(cellmd$rna_size) + (3*mad(cellmd$rna_size))
-  #prot_size_min = median(cellmd$prot_size) - (3*mad(cellmd$prot_size))
-  #prot_size_max = median(cellmd$prot_size) + (3*mad(cellmd$prot_size))
-  
-  # filter rows based on droplet qualty control metrics
-  #positive_cells = cellmd[
-   # cellmd$prot_size > prot_size_min & 
-    #  cellmd$prot_size < prot_size_max & 
-     # cellmd$propmt < 0.14 &  
-    #  cellmd$rna_size > rna_size_min & 
-     # cellmd$rna_size < rna_size_max, ]$bc
- 
+  # calculate statistical thresholds for droplet filtering.
   positive_cells = colnames(cells$`Gene Expression`)
   cells_mtx_rawprot = as.matrix(prot[ , positive_cells])
+ 
   #Sanity check: are the number of cells passing QC in line with the expected recovery from the experiment?
   
   length(positive_cells)
   
-  # define a vector of background droplet barcodes based on protein library size and mRNA content
-  
-  ## min= args[4]
-  ## max=args[5]
-
-  # minN=1.25
-  # maxN=2.5
-  # 
- 
-  
-  #negative_mtx_rawprot = as.matrix(prot[ , background_drops])
   ## background
   brna_size_min = median(md$rna_size[md$droplet_class=="background"]) - (2*mad(md$rna_size[md$droplet_class=="background"]))
   brna_size_max = median(md$rna_size[md$droplet_class=="background"]) + (2*mad(md$rna_size[md$droplet_class=="background"]))
-  #bprot_size_min = median(md$prot_size[md$droplet_class=="background"]) - (2*mad(md$prot_size[md$droplet_class=="background"]))
-  #bprot_size_max = median(md$prot_size[md$droplet_class=="background"]) + (2*mad(md$prot_size[md$droplet_class=="background"]))
-  print(paste0(" rna size lower cutoff in background: ", brna_size_min))
+   print(paste0(" rna size lower cutoff in background: ", brna_size_min))
   print(paste0(" rna size upper cutoff in background: ", brna_size_max))
-  #print(paste0(" prot size lower cutoff in background: ", bprot_size_min))
-  #print(paste0(" prot size upper cutoff in background: ", bprot_size_max))
   
   pdf(paste0(res_names,"_raw_plots_cells_param.pdf"))
   ggplot(md, aes(x = log10(ngene), y = rna_size, fill = propmt, group = propmt )) +
@@ -186,19 +153,8 @@ for ( i in res_names){
     geom_bin2d(bins = 300) +
     scale_fill_viridis_c(option = "C") +
     facet_wrap(~droplet_class) +
-    #geom_hline(yintercept = rna_size_max, color = 'orange', size = 1) + 
-    #geom_hline(yintercept = rna_size_min, color = 'orange', size = 1) +
-    geom_hline(yintercept = brna_size_max, color = 'red', size = 1) +
+     geom_hline(yintercept = brna_size_max, color = 'red', size = 1) +
     geom_hline(yintercept = brna_size_min, color = 'red', size = 1)
- # ggplot(md, aes(x = log10(ngene), y = prot_size, fill = propmt, group = propmt )) +
-  #  theme_bw() +
-  #  geom_bin2d(bins = 300) +
-   # scale_fill_viridis_c(option = "C") +
-  #  facet_wrap(~droplet_class) +
-    #geom_hline(yintercept = bprot_size_min, color = 'red', size = 1) +
-    #geom_hline(yintercept = bprot_size_max, color = 'red', size = 1) +
-    #geom_hline(yintercept = prot_size_max, color = 'orange', size = 1) +
-    #geom_hline(yintercept = prot_size_min, color = 'orange', size = 1)
   dev.off()
   
   isNeg=md$rna_size < brna_size_max &md$rna_size>brna_size_min &md$propmt < 0.25
@@ -206,17 +162,6 @@ for ( i in res_names){
   # define a vector of background / empty droplet barcodes based on protein library size and mRNA content  
   background_drops = md[isNeg, ]$bc
   negative_mtx_rawprot = prot[ , background_drops] %>%  as.matrix()
-  
-  # print(paste("Parameters are set for rna_size >",minN,"and <",maxN,"for sample",i,", check script lines 165-168 to
-  #             set different cutoffs"))
-  # 
-  #Optional step; remove proteins without staining
-  #While dsb will handle noisy proteins, some proteins in an experiment may not work for bioinformatic reasons or may target a very rare cell population that was absent in the experiment. This is especially true as panels increase in size. Proteins without counts on the stained cells should be removed prior to normalization.
-  
-  # calculate quantiles of the raw protein matrix 
-  # d1 = data.frame(pmax = apply(cells_mtx_rawprot, 1, max)) %>% 
-  #   rownames_to_column('prot') %>% arrange(pmax) %>% head() 
-  # 
   
   #normalize protein data for the cell containing droplets with the dsb method. 
   
@@ -228,8 +173,9 @@ for ( i in res_names){
   )
   
   dsb_norm_list[[i]]=as.data.frame(dsb_norm_prot)
+  
   ## diagnostic plots 
-  pdf(paste0(i, ".histScaled_v2.pdf"))
+  pdf(paste0(i, ".histScaled.pdf"))
   ## check some hashtags
   hist(cells_mtx_rawprot[1,], breaks=100, main="hash1 raw signal across cells")
   hist(dsb_norm_prot[1,], breaks=100, main="hash1 scaled signal across cells")
@@ -249,6 +195,10 @@ names(dsb_norm_list) = res_names
 
 #........................................................................................#
 makeObj = function(x,par,N){
+
+#' @x = metadata dataframe
+#' @par = "rows" or "columns"
+#' @N = outputfilename.rds
   
   if(par=="rows"){
     ## combined data frames
@@ -271,16 +221,13 @@ makeObj = function(x,par,N){
 
 ##### A) METADATA ######
 ### create a dataframe with the metadata for each sample
-
 md.all.df=makeObj(md.all,"rows","md.all.df.rds")
 
 ##### B) scaled DSB  ######
 ### create a dataframe with the scaled DSB data for each sample
-
 out=makeObj(dsb_norm_list,"columns",".scaled_prot_DSB.rds")
 
 ### load Seurat object gene expression
-
 d10x.data.rna <- sapply(res_names, function(i){
   d10x <- Read10X(file.path(PATH,i,"outs/filtered_feature_bc_matrix/"))
   d10x = d10x$"Gene Expression"
@@ -292,7 +239,6 @@ d10x.data.rna <- sapply(res_names, function(i){
 names(d10x.data.rna)=res_names
 
 ### bind the rna matrices
- 
 rna <- do.call("cbind", d10x.data.rna)
 
 ### check naming consistency
@@ -308,15 +254,13 @@ table(is.na(md.all.df[colnames(rna),]))
 
 
 #### fix rna if needed, rna = rna[,which(colnames(rna)%in%rownames(md.all.df))]
-
 s = CreateSeuratObject(counts = rna, meta.data = md.all.df[colnames(rna),], assay = "RNA")
-# s = CreateSeuratObject(counts = rna, assay = "RNA")
 
 ## scaled hashtag data
-
 s[["HTO"]] <- CreateAssayObject(data = as.matrix(out[,which(colnames(out)%in%colnames(s))]))
 saveRDS(s, file=paste0(OUTPUT,tissue,"_seuratObj_step1.rds"))
 
-print(paste("Lasñíat compiled on", Sys.time()))
 
+## Session info
+print(paste("Last compiled on", Sys.time()))
 sessionInfo()
