@@ -1,4 +1,4 @@
-setwd("/research/groups/sysgen/PROJECTS/terva/HTO_classification/hist_distribution/")
+setwd("path")
 # load packages used in this vignette 
 
 
@@ -12,13 +12,13 @@ suppressMessages(library(SeuratDisk))
 
 ## list all input folders (c ould adapt with args PATH and tissue, cond could be a txt file)
 #PATH=args[1]
-#PATH ="/research/groups/biowhat_share/share/terva/terva_main_scrnaseq/cellranger_v3_count_output/"
+
 
 ## do not remove the bar at the end!
-tissue = "AO"
+tissue = args[2]
 
 OUTPUT=paste0(tissue,"_","combined_results/")
-#tissue = args[2]
+
 
 
 ### include here your samples, for testing select first two
