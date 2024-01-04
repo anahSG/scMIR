@@ -1,4 +1,3 @@
-setwd("path")
 # load packages used in this vignette 
 
 
@@ -11,7 +10,7 @@ suppressMessages(library(SeuratDisk))
 # STEP1. Load RNA and protein alignment (Cell Ranger) data and define metadata
 
 ## list all input folders (c ould adapt with args PATH and tissue, cond could be a txt file)
-#PATH=args[1]
+PATH=args[1]
 
 
 ## do not remove the bar at the end!
