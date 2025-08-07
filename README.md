@@ -38,8 +38,16 @@ $localmem=local memory reserved for running the analysis
 
 ### 2. Gene expression changes during disease development in atherosclerosis mouse model 
 
-1) Quantification of scRNA-seq datasets using the custom mm10 genome containing genes and pri-miRNAs as previouysly described.
-2) Cell vs background droplet detection and hashtag demultiplexing
-3) QC filtering and clustering
-4) Integration and label transfer
-5) Marker gene analysis of myeloid cells
+The pipeline consists of the following main steps and folders:
+
+- [1_Droplet_Detection](./1_Droplet_Detection)  
+  Cell vs background droplet detection and hashtag demultiplexing
+
+- [2_QC_Filtering_and_Clustering](./2_QC_Filtering_and_Clustering)  
+  QC filtering and clustering
+
+- [3_Integration_and_Label_Transfer](./3_Integration_and_Label_Transfer)  
+  Integration and label transfer
+
+- [conda_env](./conda_env)  
+  Conda environment files for reproducibility
