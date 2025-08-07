@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>scMIR Analysis Pipeline – Index</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Open Sans", sans-serif;
+      max-width: 800px;
+      margin: 2rem auto;
+      line-height: 1.6;
+      padding: 0 1rem;
+    }
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      margin-top: 2rem;
+      color: #34495e;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 0.5rem;
+    }
+    a {
+      color: #0366d6;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .file::before {
+      content: "📄 ";
+    }
+    .folder::before {
+      content: "📁 ";
+    }
+  </style>
+</head>
+<body>
+  <h1>scMIR Analysis Pipeline</h1>
+
+  <h2 class="folder">1_Droplet_Detection</h2>
+  <ul>
+    <li class="file"><a href="1_Droplet_Detection/1_combined_dsb_scaled_seurat_all.R">1_combined_dsb_scaled_seurat_all.R</a></li>
+    <li class="file"><a href="1_Droplet_Detection/2_combined_hdist.R">2_combined_hdist.R</a></li>
+    <li class="file"><a href="1_Droplet_Detection/2_combined_hdist_long_vectors.R">2_combined_hdist_long_vectors.R</a></li>
+    <li class="file"><a href="1_Droplet_Detection/3_combined_clusterHash.R">3_combined_clusterHash.R</a></li>
+    <li class="file"><a href="1_Droplet_Detection/4_plots_dsb_final_comparison.R">4_plots_dsb_final_comparison.R</a></li>
+  </ul>
+
+  <h2 class="folder">2_QC_Filtering_and_Clustering</h2>
+  <ul>
+    <li class="file"><a href="2_QC_Filtering_and_Clustering/1_terva_qc_tissue_indiv.ipynb">1_terva_qc_tissue_indiv.ipynb</a></li>
+    <li class="file"><a href="2_QC_Filtering_and_Clustering/2_terva_clusters_tissue.ipynb">2_terva_clusters_tissue.ipynb</a></li>
+  </ul>
+
+  <h2 class="folder">3_Integration_and_Label_Transfer</h2>
+  <ul>
+    <li class="file"><a href="3_Integration_and_Label_Transfer/">Browse folder</a></li>
+  </ul>
+</body>
+</html>
